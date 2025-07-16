@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light+Two&display=swap');
+
+
+
+body {
+  @apply bg-[#3E5879] text-[#12343b] min-h-screen flex justify-center items-start p-4;
+  font-family: 'Shadows Into Light Two', cursive, sans-serif;
+}
+
+.card {
+  @apply w-full max-w-4xl lg:max-w-6xl mx-auto bg-[#F1EFEC] shadow-lg rounded-lg p-6;
+}
+
+.title {
+  @apply text-4xl font-bold text-center mb-4 text-[#12343b] ;
+}
+
+.form {
+  @apply flex space-x-2;
+}
+
+.input {
+  @apply text-xl flex-1 px-4 py-2 border border-[#2d545e] rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d545e];
+}
+
+.button {
+  @apply text-lg px-4 py-2 bg-[#12343b] text-white font-semibold rounded-md hover:bg-[#2d545e] transition;
+}
+
+.task-list {
+  @apply mt-6 list-none p-0 m-0 space-y-2 text-[#12343b] text-2xl;
+  font-family: 'Shadows Into Light Two', cursive;
+}
+
+.task-list li {
+  @apply transition duration-300 ease-in-out;
+}
