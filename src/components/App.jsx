@@ -6,6 +6,7 @@ import {
   FiCheckSquare,
   FiTrash2,
 } from "react-icons/fi";
+import { v4 as uuidv4 } from "uuid";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -20,6 +21,7 @@ function App() {
     event.preventDefault();
     if (!input.trim()) return;
     const newTask = {
+      id: uuidv4(),
       text: input,
       completed: false,
       editing: false,
@@ -28,49 +30,55 @@ function App() {
     setInput("");
   };
 
-  const toggleEdit = (index) => {
-    const task = tasks[index];
-    if (task.completed) return;
+  const toggleEdit = (id) => {
+  const taskToEdit = tasks.find((task) => task.id === id);
+  if (taskToEdit.completed) return;
 
-    setEditText(task.text);
+  setEditText(taskToEdit.text);
 
-    const updatedTask = tasks.map((task, i) =>
-      i === index
-        ? { ...task, editing: !task.editing }
-        : { ...task, editing: false }
-    );
-    setTasks(updatedTask);
-  };
+  const updatedTasks = tasks.map((task) =>
+    task.id === id
+      ? { ...task, editing: !task.editing }
+      : { ...task, editing: false }
+  );
+  setTasks(updatedTasks);
+};
 
-  const updateTaskText = (index, newText) => {
-    const updatedTask = tasks.map((task, i) =>
-      i === index ? { ...task, text: newText, editing: false } : task
-    );
-    setTasks(updatedTask);
-  };
 
-  const toggleComplete = (index) => {
-    const updatedTasks = tasks.map((task, i) => {
-      if (i === index) {
-        if (!task.completed) {
-          const audio = new Audio("/sounds/strike.mp3");
-          audio.play();
-        }
-        return { ...task, completed: !task.completed };
+  const updateTaskText = (id, newText) => {
+  if (!newText.trim()) return;
+
+  const updatedTasks = tasks.map((task) =>
+    task.id === id ? { ...task, text: newText, editing: false } : task
+  );
+  setTasks(updatedTasks);
+};
+
+
+const toggleComplete = (id) => {
+  const updatedTasks = tasks.map((task) => {
+    if (task.id === id) {
+      if (!task.completed) {
+        const audio = new Audio("/sounds/strike.mp3");
+        audio.play();
       }
-      return task;
-    });
-    setTasks(updatedTasks);
-  };
+      return { ...task, completed: !task.completed };
+    }
+    return task;
+  });
+  setTasks(updatedTasks);
+};
 
-  const deleteTask = (index) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this task?"
-    );
-    if (!confirmDelete) return;
-    const updatedTasks = tasks.filter((_, i) => i !== index);
-    setTasks(updatedTasks);
-  };
+  const deleteTask = (id) => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this task?"
+  );
+  if (!confirmDelete) return;
+
+  const updatedTasks = tasks.filter((task) => task.id !== id);
+  setTasks(updatedTasks);
+};
+
 
   return (
     <div className="card">
@@ -88,9 +96,9 @@ function App() {
         </button>
       </form>
       <ul className="task-list">
-        {tasks.map((task, index) => (
+        {tasks.map((task, id) => (
           <li
-            key={index}
+            key={task.id}
             className={`cursor-pointer transition duration-300 ${
               task.completed ? "line-through text-gray-600" : ""
             }`}
@@ -98,7 +106,7 @@ function App() {
             <div className="flex items-center justify-between gap-2">
               <div
                 className="flex items-center gap-2"
-                onClick={() => toggleComplete(index)}
+                onClick={() => toggleComplete(task.id)}
               >
                 {task.completed ? <FiCheckSquare /> : <FiSquare />}
 
@@ -107,10 +115,10 @@ function App() {
                     className="border px-2 py-1 rounded w-full"
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
-                    onBlur={() => updateTaskText(index, editText)}
+                    onBlur={() => updateTaskText(task.id, editText)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        updateTaskText(index, editText);
+                        updateTaskText(task.id, editText);
                       }
                     }}
                     autoFocus
@@ -128,7 +136,7 @@ function App() {
                           ? "cursor-not-allowed text-gray-400"
                           : "cursor-pointer text-blue-500 hover:text-blue-700"
                       }`}
-                      onClick={() => toggleEdit(index)}
+                      onClick={() => toggleEdit(task.id)}
                       title={
                         task.completed
                           ? "Completed tasks cannot be edited"
@@ -137,7 +145,7 @@ function App() {
                     />
                     <FiTrash2
                       className="cursor-pointer text-red-500 hover:text-red-700"
-                      onClick={() => deleteTask(index)}
+                      onClick={() => deleteTask(task.id)}
                       title={"Delete task"}
                     />
                   </>
