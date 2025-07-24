@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { v4 as uuidv4 } from "uuid";
 import TaskInput from "./TaskInput";
 import TaskList from "./TaskList";
@@ -8,7 +8,20 @@ function App() {
   const [input, setInput] = useState("");
   const [editText, setEditText] = useState("");
 
+  useEffect(() => {
+    const savedTasks = localStorage.getItem("tasks");
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
   const handleChange = (event) => setInput(event.target.value);
+
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
