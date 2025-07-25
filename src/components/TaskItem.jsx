@@ -1,5 +1,11 @@
 import React from "react";
-import { FiEdit, FiCheck, FiSquare, FiCheckSquare, FiTrash2 } from "react-icons/fi";
+import {
+  FiEdit,
+  FiCheck,
+  FiSquare,
+  FiCheckSquare,
+  FiTrash2,
+} from "react-icons/fi";
 
 function TaskItem({
   task,
@@ -23,22 +29,42 @@ function TaskItem({
         >
           {task.completed ? <FiCheckSquare /> : <FiSquare />}
 
-          {task.editing ? (
-            <input
-              className="border px-2 py-1 rounded w-full"
-              value={editText}
-              onChange={(e) => setEditText(e.target.value)}
-              onBlur={() => onUpdateText(task.id, editText)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  onUpdateText(task.id, editText);
-                }
-              }}
-              autoFocus
-            />
-          ) : (
-            <span>{task.text}</span>
-          )}
+          <div className="flex flex-col gap-1">
+            {task.editing ? (
+              <>
+                <input
+                  className="border px-2 py-1 rounded w-full"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      onUpdateText(task.id, editText, task.dueDate);
+                    }
+                  }}
+                  onClick={(e) => e.stopPropagation()} 
+                  autoFocus
+                />
+                <input
+                  type="date"
+                  className="border px-2 py-1 rounded w-full"
+                  value={task.dueDate || ""}
+                  onChange={(e) =>
+                    onUpdateText(task.id, editText, e.target.value)
+                  }
+                  onClick={(e) => e.stopPropagation()} 
+                />
+              </>
+            ) : (
+              <>
+                <span>{task.text}</span>
+                {task.dueDate && (
+                  <span className="text-sm text-gray-500">
+                    Due: {new Date(task.dueDate).toLocaleDateString()}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {!task.editing && (

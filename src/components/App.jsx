@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import TaskInput from "./TaskInput";
 import TaskList from "./TaskList";
@@ -7,6 +7,7 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
   const [editText, setEditText] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
   useEffect(() => {
     const savedTasks = localStorage.getItem("tasks");
@@ -21,7 +22,7 @@ function App() {
 
   const handleChange = (event) => setInput(event.target.value);
 
-
+  const handleDateChange = (event) => setDueDate(event.target.value);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -30,12 +31,15 @@ function App() {
     const newTask = {
       id: uuidv4(),
       text: input,
+      dueDate: dueDate || null,
       completed: false,
       editing: false,
     };
 
     setTasks([...tasks, newTask]);
     setInput("");
+    setDueDate("");
+    
   };
 
   const toggleEdit = (id) => {
@@ -52,14 +56,22 @@ function App() {
     setTasks(updatedTasks);
   };
 
-  const updateTaskText = (id, newText) => {
-    if (!newText.trim()) return;
+  const updateTaskText = (id, newText, updatedDueDate) => {
+  if (!newText.trim()) return;
 
-    const updatedTasks = tasks.map((task) =>
-      task.id === id ? { ...task, text: newText, editing: false } : task
-    );
-    setTasks(updatedTasks);
-  };
+  const updatedTasks = tasks.map((task) =>
+    task.id === id
+      ? {
+          ...task,
+          text: newText,
+          dueDate: updatedDueDate,
+          editing: false,
+        }
+      : task
+  );
+  setTasks(updatedTasks);
+};
+
 
   const toggleComplete = (id) => {
     const updatedTasks = tasks.map((task) => {
@@ -88,7 +100,13 @@ function App() {
   return (
     <div className="card">
       <h1 className="title">Task List</h1>
-      <TaskInput input={input} onChange={handleChange} onSubmit={handleSubmit} />
+      <TaskInput
+        input={input}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        dueDate={dueDate}
+        onDateChange={handleDateChange}
+      />
       <TaskList
         tasks={tasks}
         editText={editText}
