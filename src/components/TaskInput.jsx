@@ -1,6 +1,6 @@
 import React from "react";
 
-function TaskInput({ input, onChange, onSubmit,dueDate, onDateChange }) {
+function TaskInput({ input, onChange, onSubmit, dueDate, onDateChange }) {
   return (
     <form onSubmit={onSubmit} className="form">
       <input

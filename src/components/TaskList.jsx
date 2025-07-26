@@ -1,29 +1,36 @@
 import React from "react";
 import TaskItem from "./TaskItem";
+import { AnimatePresence } from "framer-motion";
 
 function TaskList({
   tasks,
   editText,
   setEditText,
+  editDueDate,
+  setEditDueDate,
   onToggleComplete,
   onToggleEdit,
-  onUpdateText,
+  onUpdateTask,
   onDelete,
 }) {
   return (
     <ul className="task-list">
-      {tasks.map((task) => (
-        <TaskItem
-          key={task.id}
-          task={task}
-          editText={editText}
-          setEditText={setEditText}
-          onToggleComplete={onToggleComplete}
-          onToggleEdit={onToggleEdit}
-          onUpdateText={onUpdateText}
-          onDelete={onDelete}
-        />
-      ))}
+      <AnimatePresence>
+        {tasks.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            editText={editText}
+            setEditText={setEditText}
+            editDueDate={editDueDate}
+            setEditDueDate={setEditDueDate}
+            onToggleComplete={onToggleComplete}
+            onToggleEdit={onToggleEdit}
+            onUpdateTask={onUpdateTask}
+            onDelete={onDelete}
+          />
+        ))}
+      </AnimatePresence>
     </ul>
   );
 }

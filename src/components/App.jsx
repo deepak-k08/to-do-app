@@ -8,6 +8,7 @@ function App() {
   const [input, setInput] = useState("");
   const [editText, setEditText] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [editDueDate, setEditDueDate] = useState("");
 
   useEffect(() => {
     const savedTasks = localStorage.getItem("tasks");
@@ -39,7 +40,6 @@ function App() {
     setTasks([...tasks, newTask]);
     setInput("");
     setDueDate("");
-    
   };
 
   const toggleEdit = (id) => {
@@ -47,6 +47,7 @@ function App() {
     if (taskToEdit.completed) return;
 
     setEditText(taskToEdit.text);
+    setEditDueDate(taskToEdit.dueDate || "");
 
     const updatedTasks = tasks.map((task) =>
       task.id === id
@@ -56,22 +57,16 @@ function App() {
     setTasks(updatedTasks);
   };
 
-  const updateTaskText = (id, newText, updatedDueDate) => {
-  if (!newText.trim()) return;
+  const updateTask = (id, newText, newDueDate) => {
+    if (!newText.trim()) return;
 
-  const updatedTasks = tasks.map((task) =>
-    task.id === id
-      ? {
-          ...task,
-          text: newText,
-          dueDate: updatedDueDate,
-          editing: false,
-        }
-      : task
-  );
-  setTasks(updatedTasks);
-};
-
+    const updatedTasks = tasks.map((task) =>
+      task.id === id
+        ? { ...task, text: newText, dueDate: newDueDate, editing: false }
+        : task
+    );
+    setTasks(updatedTasks);
+  };
 
   const toggleComplete = (id) => {
     const updatedTasks = tasks.map((task) => {
@@ -111,9 +106,11 @@ function App() {
         tasks={tasks}
         editText={editText}
         setEditText={setEditText}
+        editDueDate={editDueDate}
+        setEditDueDate={setEditDueDate}
         onToggleComplete={toggleComplete}
         onToggleEdit={toggleEdit}
-        onUpdateText={updateTaskText}
+        onUpdateTask={updateTask}
         onDelete={deleteTask}
       />
     </div>
